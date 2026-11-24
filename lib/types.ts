@@ -46,12 +46,12 @@ export type Bill = {
 export const PERSON_COLORS = [
   "#2F5BFF", // cobalt
   "#D6246E", // magenta
-  "#E8641B", // orange
-  "#0E8F80", // teal
+  "#C2410C", // orange
+  "#0F766E", // teal
   "#7A3FF2", // violet
-  "#B98A00", // mustard
-  "#1F7F45", // forest
-  "#0A86C9", // sky
+  "#A16207", // amber
+  "#15803D", // green
+  "#0369A1", // sky
   "#A23B72", // plum
   "#5C6B00", // olive
 ] as const;

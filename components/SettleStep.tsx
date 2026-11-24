@@ -8,7 +8,7 @@ import { transferKey, type Settlement } from "@/lib/settle";
 import type { BillMath, PersonShare } from "@/lib/split";
 import type { Bill, Person } from "@/lib/types";
 import { Slip } from "./ReceiptStep";
-import { Btn, Dot, MoneyInput, Sheet, buzz } from "./ui";
+import { BrandCard, Btn, Dot, MoneyInput, Sheet, buzz } from "./ui";
 
 type Props = {
   bill: Bill;
@@ -30,15 +30,15 @@ export function SettleStep({ bill, math, settlement, update, notify, goSplit, on
 
   if (bill.people.length === 0) {
     return (
-      <Slip>
+      <BrandCard>
         <div className="py-10 text-center">
           <h2 className="font-display text-2xl font-semibold tracking-tight">Who ate?</h2>
-          <p className="mt-1 text-ink-2">Add names and tap what they had, then come back here.</p>
+          <p className="mt-1 text-on-brand-2">Add names and tap what they had, then come back here.</p>
           <Btn className="mt-5" onClick={goSplit}>
             Go to who had what
           </Btn>
         </div>
-      </Slip>
+      </BrandCard>
     );
   }
 

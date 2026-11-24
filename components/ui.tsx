@@ -7,14 +7,19 @@ import { PERSON_COLORS, type Person } from "@/lib/types";
 
 export const colorOf = (p: Pick<Person, "color">) => PERSON_COLORS[p.color % PERSON_COLORS.length];
 
-export function Dot({ person, size = 10 }: { person: Pick<Person, "color">; size?: number }) {
+export function Dot({ person, size = 10, ring }: { person: Pick<Person, "color">; size?: number; ring?: boolean }) {
   return (
     <span
       aria-hidden
-      className="inline-block shrink-0 rounded-full"
+      className={`inline-block shrink-0 rounded-full ${ring ? "ring-[1.5px] ring-on-brand/70" : ""}`}
       style={{ width: size, height: size, background: colorOf(person) }}
     />
   );
+}
+
+/** The brand surface: where the next action lives. The accent button only ever sits on this. */
+export function BrandCard({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <section className={`on-brand rounded-[22px] bg-brand px-5 py-5 text-on-brand ${className}`}>{children}</section>;
 }
 
 /** A small initial in the person's colour, used to mark who had an item. */
@@ -59,9 +64,9 @@ export function Btn({
   const base =
     "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition active:scale-[0.98] disabled:opacity-40 disabled:active:scale-100";
   const kinds = {
-    solid: "bg-ink text-paper h-12 px-6 text-[15px]",
-    outline: "border-[1.5px] border-ink h-11 px-5 text-[15px]",
-    ghost: "h-9 px-3 text-sm text-ink-2 underline decoration-line underline-offset-4",
+    solid: "bg-accent text-on-accent h-12 px-6 text-[15px] font-bold shadow-[0_6px_18px_-8px_rgba(0,0,0,0.45)]",
+    outline: "border-[1.5px] border-current h-11 px-5 text-[15px]",
+    ghost: "h-9 px-3 text-sm opacity-80 underline decoration-current/30 underline-offset-4",
   };
   return (
     <button type={type} onClick={onClick} disabled={disabled} className={`${base} ${kinds[kind]} ${className}`} {...rest}>

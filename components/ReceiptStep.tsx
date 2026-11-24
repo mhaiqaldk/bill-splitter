@@ -6,7 +6,7 @@ import { rp } from "@/lib/money";
 import { lineTotal, type BillMath } from "@/lib/split";
 import { uid, type Bill, type Charge } from "@/lib/types";
 import { CameraIcon, PlusIcon, XIcon } from "./icons";
-import { Btn, Chip, MoneyInput, Sheet, Stepper } from "./ui";
+import { BrandCard, Btn, Chip, MoneyInput, Sheet, Stepper } from "./ui";
 
 type Props = {
   bill: Bill;
@@ -129,11 +129,13 @@ export function ReceiptStep({ bill, math, update, notify, scanTotal, setScanTota
 
   if (!hasItems && !typing) {
     return (
-      <Slip>
+      <BrandCard>
         {fileInput}
-        <div className="px-1 py-10 text-center">
-          <h2 className="font-display text-[30px] leading-tight font-extrabold tracking-[-0.03em]">Got the receipt?</h2>
-          <p className="mx-auto mt-2 max-w-[280px] text-ink-2">Snap a photo and we&apos;ll read the items. Or type them in.</p>
+        <div className="px-1 py-9 text-center">
+          <h2 className="font-display text-[32px] leading-tight font-extrabold tracking-[-0.03em]">Got the receipt?</h2>
+          <p className="mx-auto mt-2 max-w-[280px] text-on-brand-2">
+            Snap a photo and we&apos;ll read the items. Or type them in.
+          </p>
           <div className="mt-7 flex flex-col items-center gap-2.5">
             <Btn onClick={() => fileRef.current?.click()} className="w-full max-w-[260px]">
               <CameraIcon /> Scan receipt
@@ -142,12 +144,14 @@ export function ReceiptStep({ bill, math, update, notify, scanTotal, setScanTota
               Type items
             </Btn>
           </div>
-          {scanError && <p className="mx-auto mt-4 max-w-[300px] text-sm text-stamp">{scanError}</p>}
+          {scanError && (
+            <p className="mx-auto mt-4 max-w-[300px] rounded-xl bg-on-brand/10 px-3 py-2 text-sm">{scanError}</p>
+          )}
           <Btn kind="ghost" className="mt-5" onClick={onSample}>
             Or look around with a sample bill
           </Btn>
         </div>
-      </Slip>
+      </BrandCard>
     );
   }
 

@@ -8,7 +8,7 @@ import { rp } from "@/lib/money";
 import { computeBill } from "@/lib/split";
 import { uid, type Bill } from "@/lib/types";
 import { Slip } from "./ReceiptStep";
-import { Btn, Dot, Sheet, Wordmark, useToast } from "./ui";
+import { BrandCard, Btn, Dot, Sheet, Wordmark, useToast } from "./ui";
 
 export default function History() {
   const router = useRouter();
@@ -48,15 +48,15 @@ export default function History() {
       <p className="mb-5 text-sm text-ink-2">Saved on this device only. The latest 30 are kept.</p>
 
       {bills.length === 0 ? (
-        <Slip>
+        <BrandCard>
           <div className="py-10 text-center">
             <h2 className="font-display text-2xl font-semibold tracking-tight">No bills yet</h2>
-            <p className="mt-1 text-ink-2">Split your first one and it&apos;ll wait here.</p>
+            <p className="mt-1 text-on-brand-2">Split your first one and it&apos;ll wait here.</p>
             <Btn className="mt-5" onClick={() => router.push("/")}>
               Start a bill
             </Btn>
           </div>
-        </Slip>
+        </BrandCard>
       ) : (
         <ul className="space-y-3">
           {bills.map((b) => {
@@ -104,7 +104,7 @@ export default function History() {
             Keep it
           </Btn>
           <Btn
-            className="flex-1 !bg-stamp"
+            className="flex-1 !bg-stamp !text-white !shadow-none"
             onClick={() => {
               if (!confirm) return;
               deleteBill(confirm.id);

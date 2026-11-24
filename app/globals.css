@@ -1,14 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f4efe4;
-  --color-slip: #fbf8f1;
-  --color-well: #ebe4d6;
-  --color-ink: #1a1814;
-  --color-ink-2: #5e574c;
-  --color-ink-3: #857d70;
-  --color-line: #d9d0bf;
-  --color-stamp: #c8321e;
+  /* 60%: cool thermal-paper neutrals */
+  --color-paper: #eef0eb;
+  --color-slip: #ffffff;
+  --color-well: #eceee8;
+  --color-ink: #14171a;
+  --color-ink-2: #555b60;
+  --color-ink-3: #868b8f;
+  --color-line: #d7dad3;
+  --color-stamp: #c62828;
+
+  /* 30%: one brand colour, used for the surfaces where the next action lives */
+  --color-brand: #0e3b2c;
+  --color-on-brand: #f4f1e6;
+  --color-on-brand-2: #a9c2b5;
+
+  /* 10%: accent, only on the main button (always placed on the brand colour) */
+  --color-accent: #ffc531;
+  --color-on-accent: #14171a;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), var(--font-inter), sans-serif;
@@ -41,9 +51,17 @@ body {
   border-bottom: 1.5px dotted var(--color-line);
 }
 
+.on-brand .leader {
+  border-color: color-mix(in srgb, var(--color-on-brand) 28%, transparent);
+}
+
 :focus-visible {
   outline: 2px solid var(--color-ink);
   outline-offset: 2px;
+}
+
+.on-brand :focus-visible {
+  outline-color: var(--color-on-brand);
 }
 
 @layer base {

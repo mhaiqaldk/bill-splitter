@@ -10,7 +10,7 @@ import { decodeBill } from "@/lib/share";
 import { computeBill, lineTotal } from "@/lib/split";
 import { Slip } from "./ReceiptStep";
 import { Breakdown } from "./SettleStep";
-import { Badge, Btn, Dot, Wordmark, colorOf, copyText, useToast } from "./ui";
+import { Badge, BrandCard, Btn, Dot, Wordmark, colorOf, copyText, useToast } from "./ui";
 
 export default function SharedView() {
   const router = useRouter();
@@ -23,15 +23,15 @@ export default function SharedView() {
   if (!bill || !math || !settlement) {
     return (
       <Shell>
-        <Slip>
+        <BrandCard>
           <div className="py-10 text-center">
             <h1 className="font-display text-2xl font-semibold tracking-tight">This link looks incomplete</h1>
-            <p className="mt-1 text-ink-2">It may have been cut off when it was pasted. Ask for the link again.</p>
+            <p className="mt-1 text-on-brand-2">It may have been cut off when it was pasted. Ask for the link again.</p>
             <Btn className="mt-6" onClick={() => router.push("/")}>
               Split a bill yourself
             </Btn>
           </div>
-        </Slip>
+        </BrandCard>
       </Shell>
     );
   }
@@ -71,33 +71,50 @@ export default function SharedView() {
 
         {mine && (
           <div className="fade-in mt-5 border-t-[1.5px] border-dashed border-line pt-4">
-            {myOut.length > 0 ? (
-              myOut.map((t) => (
-                <p key={t.to} className="text-lg">
-                  You pay <span className="font-semibold">{person(t.to)?.name}</span>
-                  <span className="num mt-1 block text-[34px] leading-tight font-bold">{rp(t.amount)}</span>
-                </p>
-              ))
-            ) : myIn.length > 0 ? (
-              <p className="text-lg">
-                You get back
-                <span className="num mt-1 block text-[34px] leading-tight font-bold">
-                  {rp(myIn.reduce((a, t) => a + t.amount, 0))}
-                </span>
-              </p>
-            ) : (
-              <p className="text-lg">
-                Your share
-                <span className="num mt-1 block text-[34px] leading-tight font-bold">{rp(mine.total)}</span>
-              </p>
-            )}
-            <p className="mt-3 mb-1 text-sm font-medium">What you had</p>
+            <p className="mb-1 text-sm font-medium">What you had</p>
             <Breakdown share={mine} taxLabel={bill.tax.label} />
           </div>
         )}
       </Slip>
 
-      {bill.note.trim() && (
+      {mine && (
+        <BrandCard className="fade-in">
+          {myOut.length > 0 ? (
+            myOut.map((t) => (
+              <p key={t.to} className="text-lg">
+                You pay <span className="font-semibold">{person(t.to)?.name}</span>
+                <span className="num mt-1 block text-[38px] leading-tight font-bold">{rp(t.amount)}</span>
+              </p>
+            ))
+          ) : myIn.length > 0 ? (
+            <p className="text-lg">
+              You get back
+              <span className="num mt-1 block text-[38px] leading-tight font-bold">
+                {rp(myIn.reduce((a, t) => a + t.amount, 0))}
+              </span>
+            </p>
+          ) : (
+            <p className="text-lg">
+              Your share
+              <span className="num mt-1 block text-[38px] leading-tight font-bold">{rp(mine.total)}</span>
+            </p>
+          )}
+          {myOut.length > 0 && bill.note.trim() && (
+            <>
+              <p className="mt-4 text-sm text-on-brand-2">Pay to</p>
+              <p className="break-words whitespace-pre-wrap">{bill.note}</p>
+              <Btn
+                className="mt-4 w-full"
+                onClick={async () => toast.show((await copyText(bill.note)) ? "Payment details copied" : "Couldn't copy")}
+              >
+                Copy payment details
+              </Btn>
+            </>
+          )}
+        </BrandCard>
+      )}
+
+      {!mine && bill.note.trim() && (
         <Slip>
           <h2 className="font-display text-xl font-semibold tracking-tight">Where to pay</h2>
           <p className="mt-2 break-words whitespace-pre-wrap">{bill.note}</p>
@@ -164,6 +181,7 @@ export default function SharedView() {
 
       <div className="flex flex-col items-center gap-2 pt-2">
         <Btn
+          kind="outline"
           className="w-full max-w-[320px]"
           onClick={async () => {
             const ok = await copyText(whatsappText(bill, math, settlement, window.location.href));

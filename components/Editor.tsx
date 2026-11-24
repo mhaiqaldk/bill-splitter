@@ -14,7 +14,7 @@ import { ArrowIcon, ShareIcon } from "./icons";
 import { ReceiptStep } from "./ReceiptStep";
 import { SettleStep } from "./SettleStep";
 import { SplitStep } from "./SplitStep";
-import { Btn, Dot, Wordmark, copyText, useToast } from "./ui";
+import { BrandCard, Btn, Dot, Wordmark, copyText, useToast } from "./ui";
 
 type Step = "receipt" | "split" | "settle";
 const STEPS: { key: Step; label: string; next?: string }[] = [
@@ -148,7 +148,7 @@ export default function Editor() {
                   onClick={() => go(s.key)}
                   aria-current={s.key === step ? "step" : undefined}
                   className={`-mb-px flex h-11 w-full items-center gap-1.5 border-b-2 text-left text-[13px] sm:text-sm ${
-                    s.key === step ? "border-ink font-semibold" : "border-transparent text-ink-2"
+                    s.key === step ? "border-brand font-semibold" : "border-transparent text-ink-2"
                   }`}
                 >
                   <span className="num text-[11px]">{i + 1}</span>
@@ -185,27 +185,31 @@ export default function Editor() {
             />
           )}
 
-          {bill.items.length > 0 && (
-            <div className="mt-6 hidden justify-end lg:flex">
-              <Btn onClick={primary.onClick}>
-                {primary.label} {primary.icon}
-              </Btn>
-            </div>
-          )}
         </main>
 
         <aside className="hidden lg:block">
           <div className="sticky top-6 mt-[88px]">
-            <Summary bill={bill} math={math} settlement={settlement} />
+            <Summary
+              bill={bill}
+              math={math}
+              settlement={settlement}
+              action={
+                bill.items.length > 0 ? (
+                  <Btn onClick={primary.onClick} className="mt-5 w-full">
+                    {primary.label} {primary.icon}
+                  </Btn>
+                ) : null
+              }
+            />
           </div>
         </aside>
       </div>
 
       {bill.items.length > 0 && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/95 px-5 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
+        <div className="on-brand fixed inset-x-0 bottom-0 z-40 rounded-t-[22px] bg-brand px-5 pt-3.5 pb-[max(14px,env(safe-area-inset-bottom))] text-on-brand lg:hidden">
           <div className="mx-auto flex max-w-[560px] items-center gap-4">
             <div className="min-w-0">
-              <p className="text-[11px] tracking-wide text-ink-2 uppercase">Total</p>
+              <p className="text-[11px] tracking-wide text-on-brand-2 uppercase">Total</p>
               <p className="num truncate text-lg font-bold">{rp(math.total)}</p>
             </div>
             <Btn onClick={primary.onClick} className="ml-auto !px-5">
@@ -219,19 +223,29 @@ export default function Editor() {
   );
 }
 
-function Summary({ bill, math, settlement }: { bill: Bill; math: ReturnType<typeof computeBill>; settlement: ReturnType<typeof settle> }) {
+function Summary({
+  bill,
+  math,
+  settlement,
+  action,
+}: {
+  bill: Bill;
+  math: ReturnType<typeof computeBill>;
+  settlement: ReturnType<typeof settle>;
+  action: React.ReactNode;
+}) {
   const person = (id: string) => bill.people.find((p) => p.id === id);
   return (
-    <div className="rounded-[22px] border border-line/70 p-5">
-      <p className="num text-[11px] tracking-[0.14em] text-ink-2 uppercase">Total</p>
-      <p className="num text-[34px] font-bold tracking-tight">{rp(math.total)}</p>
+    <BrandCard className="!p-6">
+      <p className="num text-[11px] tracking-[0.14em] text-on-brand-2 uppercase">Total</p>
+      <p className="num text-[36px] font-bold tracking-tight">{rp(math.total)}</p>
       {bill.people.length > 0 ? (
-        <ul className="mt-4 space-y-2 border-t border-line pt-4">
+        <ul className="mt-4 space-y-2 border-t border-on-brand/15 pt-4">
           {math.people.map((s) => {
             const p = person(s.personId)!;
             return (
               <li key={p.id} className="flex items-center gap-2.5">
-                <Dot person={p} size={10} />
+                <Dot person={p} size={10} ring />
                 <span className="truncate">{p.name}</span>
                 <span className="leader !translate-y-0" />
                 <span className="num">{rp(s.total)}</span>
@@ -239,8 +253,8 @@ function Summary({ bill, math, settlement }: { bill: Bill; math: ReturnType<type
             );
           })}
           {math.unclaimedItemIds.length > 0 && (
-            <li className="flex items-center gap-2.5 text-ink-2">
-              <span className="h-2.5 w-2.5 rounded-full border border-ink-3" />
+            <li className="flex items-center gap-2.5 text-on-brand-2">
+              <span className="h-2.5 w-2.5 rounded-full border border-on-brand-2" />
               <span>Nobody yet</span>
               <span className="leader !translate-y-0" />
               <span className="num">{rp(math.unclaimedTotal)}</span>
@@ -248,10 +262,10 @@ function Summary({ bill, math, settlement }: { bill: Bill; math: ReturnType<type
           )}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-ink-2">Each person&apos;s share shows up here as you go.</p>
+        <p className="mt-3 text-sm text-on-brand-2">Each person&apos;s share shows up here as you go.</p>
       )}
       {settlement.transfers.length > 0 && (
-        <ul className="mt-4 space-y-1.5 border-t border-line pt-4 text-sm">
+        <ul className="mt-4 space-y-1.5 border-t border-on-brand/15 pt-4 text-sm">
           {settlement.transfers.map((t) => (
             <li key={`${t.from}>${t.to}`} className="flex items-baseline">
               <span className="truncate">
@@ -263,6 +277,7 @@ function Summary({ bill, math, settlement }: { bill: Bill; math: ReturnType<type
           ))}
         </ul>
       )}
-    </div>
+      {action}
+    </BrandCard>
   );
 }
