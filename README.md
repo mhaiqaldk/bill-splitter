@@ -2,6 +2,10 @@
 
 Split a bill by what each person actually had. Scan the receipt, tap who had what, and get the fewest transfers, with tax and service split fairly, in rupiah.
 
+**Live:** https://bill-splitter-kappa-three.vercel.app
+
+![Patungan](app/opengraph-image.png)
+
 ## What it does
 
 - **Scan a receipt.** A photo is shrunk in the browser and sent to `/api/scan`, which asks a vision model on OpenRouter to read the line items. You can always type items in by hand instead.
