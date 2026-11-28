@@ -31,6 +31,8 @@ type ScanResponse = {
 };
 
 /** "2x Es teh" or "2 x Es teh" -> qty 2, name "Es teh" */
+const OFFLINE_SCAN = "You're offline, and scanning needs internet. Type the items in, or scan when you're back online.";
+
 function parseName(raw: string): { qty: number; name: string } {
   const m = raw.trim().match(/^(\d{1,3})\s*[x×]\s+(.+)$/i);
   return m ? { qty: Math.max(1, Number(m[1])), name: m[2].trim() } : { qty: 1, name: raw.trim() };
@@ -52,6 +54,11 @@ export function ReceiptStep({ bill, math, update, notify, scanTotal, setScanTota
 
   async function onFile(file: File | undefined) {
     if (!file) return;
+    if (!navigator.onLine) {
+      setScanError(OFFLINE_SCAN);
+      if (fileRef.current) fileRef.current.value = "";
+      return;
+    }
     setScanError(null);
     setScanning(true);
     const ac = new AbortController();
@@ -76,7 +83,9 @@ export function ReceiptStep({ bill, math, update, notify, scanTotal, setScanTota
       notify(`Read ${items.length} item${items.length === 1 ? "" : "s"}. Check them against the receipt.`);
     } catch (e) {
       if (ac.signal.aborted) return;
-      setScanError(e instanceof Error ? e.message : "Something went wrong. Type the items in.");
+      // fetch() throws a TypeError when the request never reaches the server.
+      if (e instanceof TypeError) setScanError(OFFLINE_SCAN);
+      else setScanError(e instanceof Error ? e.message : "Something went wrong. Type the items in.");
     } finally {
       setScanning(false);
       if (fileRef.current) fileRef.current.value = "";

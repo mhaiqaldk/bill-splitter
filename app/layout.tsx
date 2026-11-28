@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { OfflineReady } from "@/components/OfflineReady";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"], weight: ["600", "800"] });
@@ -21,11 +22,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
   },
+  appleWebApp: { title: "Patungan", capable: true, statusBarStyle: "default" },
   twitter: { card: "summary_large_image", title: "Patungan · split the bill by what you had", description },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4efe4",
+  themeColor: "#eef0eb",
   width: "device-width",
   initialScale: 1,
 };
@@ -33,7 +35,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${inter.variable} ${bricolage.variable} ${jetbrains.variable} antialiased`}>
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh">
+        {children}
+        <OfflineReady />
+      </body>
     </html>
   );
 }
